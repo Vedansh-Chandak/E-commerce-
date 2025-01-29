@@ -8,12 +8,24 @@ const path =require("path")
 const connectDB = require('./config/mongoose-connection.js')
 const dotenv = require('dotenv');
 const { log } = require("console");
+const expressSession = require("express-session")
+const flash = require("connect-flash")
+
 dotenv.config();
 
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
+app.use(
+    expressSession({
+        resave: false,
+        saveUninitialized: false,
+        secret: process.env.EXPRESS_SESSION_SECRET,
+    })
+)
+app.use(flash())
+
 connectDB()
 .then(()=>{
     const server = app.listen(process.env.PORT || 3000, ()=>{
